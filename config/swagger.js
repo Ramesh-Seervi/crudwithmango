@@ -1,4 +1,5 @@
 const swaggerJSDoc = require('swagger-jsdoc');
+const path = require('path');
 
 const options = {
   definition: {
@@ -10,12 +11,16 @@ const options = {
     },
     servers: [
       {
-        url: process.env.SWAGGER_SERVER_URL || `http://localhost:${process.env.PORT || 5005}`
+        url: process.env.SWAGGER_SERVER_URL || '/' // Use root-relative URL for flexibility
       }
     ]
   },
   // Files containing annotations for the OpenAPI specification
-  apis: ['./routes/*.js', './models/*.js']
+  // Using path.join with __dirname ensures the files are found regardless of CWD
+  apis: [
+    path.join(__dirname, '../routes/*.js'),
+    path.join(__dirname, '../models/*.js')
+  ]
 };
 
 const swaggerSpec = swaggerJSDoc(options);

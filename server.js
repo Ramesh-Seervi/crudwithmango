@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const cors = require('cors');
@@ -28,16 +29,23 @@ const blogRoutes = require('./routes/blogRoutes');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
 
-// Mount Routes
-app.use('/api/blogs', blogRoutes);
-
-const path = require('path');
-
-// Static Folder
+// Static Folder — served first so index.html is at /
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Swagger UI route
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// Mount API Routes
+app.use('/api/blogs', blogRoutes);
+
+// Swagger UI — dynamically override the server URL based on the incoming request host
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', (req, res, next) => {
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const host = req.headers['x-forwarded-host'] || req.get('host');
+    const dynamicSpec = {
+        ...swaggerSpec,
+        servers: [{ url: `${protocol}://${host}` }]
+    };
+    swaggerUi.setup(dynamicSpec)(req, res, next);
+});
 
 const PORT = process.env.PORT || 5005;
 
