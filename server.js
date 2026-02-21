@@ -31,15 +31,13 @@ const swaggerSpec = require('./config/swagger');
 // Mount Routes
 app.use('/api/blogs', blogRoutes);
 
+const path = require('path');
+
 // Static Folder
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Swagger UI route
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-app.get('/', (req, res) => {
-    res.send('API is running...');
-});
 
 const PORT = process.env.PORT || 5005;
 

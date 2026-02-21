@@ -4,9 +4,9 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'CRUD with Mango API',
+      title: 'RPS News API',
       version: '1.0.0',
-      description: 'API documentation for the CRUD with Mango backend'
+      description: 'API documentation for the RPS News reports portal'
     },
     servers: [
       {
